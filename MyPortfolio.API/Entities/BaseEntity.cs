@@ -10,6 +10,9 @@ namespace MyPortfolio.API.Entities
         public DateTime CreatedDate { get; set; }
         [Required]
         public DateTime ModifiedDate { get; set; }
-        
+
+        [Required]
+        public DateTime IsActive { get; set; }
+
     }
 }

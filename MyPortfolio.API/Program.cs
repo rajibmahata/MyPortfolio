@@ -5,13 +5,14 @@ using MyPortfolio.API.Services;
 using MyPortfolio.API.Services.Interface;
 using GraphQL.Server.Ui.Voyager;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Query = MyPortfolio.API.GraphQL.Query;
 
 var builder = WebApplication.CreateBuilder(args);
 
 using (var db = new MyPortfolioDbContext())
 {
-    db.Database.EnsureCreated();
-    //db.Database.Migrate();
+    //db.Database.EnsureCreated();
+    db.Database.Migrate();
 }
 
 builder.Services.AddControllers();
@@ -19,11 +20,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddEntityFrameworkSqlite().AddDbContext<MyPortfolioDbContext>();
-builder.Services.AddScoped<MyPortfolio.API.GraphQL.Query>();
+builder.Services.AddScoped<Query>();
 builder.Services.AddScoped<Mutuation>();
 builder.Services.AddScoped(typeof(IPortfolioService<>), typeof(PortfolioService<>));
 builder.Services.AddGraphQLServer()
-   .AddQueryType<MyPortfolio.API.GraphQL.Query>()
+   .AddQueryType<Query>()
    .AddMutationType<Mutuation>()
    .AddProjections()
    .RegisterDbContext<MyPortfolioDbContext>();
