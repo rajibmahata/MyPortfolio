@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using MyPortfolio.API.Entities;
 using System.Reflection;
 
@@ -6,19 +7,29 @@ namespace MyPortfolio.API
 {
     public class MyPortfolioDbContext : DbContext
     {
-        public DbSet<PortfolioType> PortfolioTypes { get;set;}
+        public MyPortfolioDbContext(DbContextOptions<MyPortfolioDbContext> options)
+        : base(options)
+        {
+        }
+
+        public DbSet<PortfolioType> PortfolioTypes { get; set; }
         public DbSet<Skill> Skills { get; set; }
-        public DbSet<Portfolio> Portfolios { get; set; }
+        public DbSet<Entities.MyPortal> MyPortals { get; set; }
+        public DbSet<AboutMe> About { get; set; }
         public DbSet<PortfolioSummary> PortfolioSummaries { get; set; }
         public DbSet<PortfolioUser> PortfolioUsers { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Filename=Database\\MyPortfolioLiteDB.db", options =>
-            {
-                options.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
-            });
+            //optionsBuilder.UseSqlite("Filename=Database\\MyPortfolioLiteDB.db", options =>
+            //{
+            //    options.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
+            //});
+
+            optionsBuilder.ConfigureWarnings(warnings =>
+         warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
             base.OnConfiguring(optionsBuilder);
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Map table names
@@ -43,20 +54,68 @@ namespace MyPortfolio.API
                 entity.Property(e => e.ModifiedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
 
-            modelBuilder.Entity<Portfolio>().ToTable("Portfolio");
-            modelBuilder.Entity<Portfolio>(entity =>
+            modelBuilder.Entity<Entities.MyPortal>().ToTable("MyPortal");
+
+            modelBuilder.Entity<Entities.MyPortal>(entity =>
             {
                 entity.HasKey(e => e.ID);
-                entity.HasIndex(e => e.Name).IsUnique();
-                entity.HasIndex(e => e.Email).IsUnique();
-                entity.HasIndex(e => e.ContactNumber).IsUnique();
-                entity.HasIndex(e => e.SkypeId).IsUnique();
-                entity.HasIndex(e => e.Linkedin).IsUnique();
-                entity.HasIndex(e => e.Twitter).IsUnique();
+                entity.HasIndex(e => e.Username).IsUnique(); 
+                entity.HasIndex(e => e.Passwordhash).IsUnique();
+                entity.HasIndex(e => e.Passwordsalt).IsUnique();
                 entity.HasIndex(e => e.IsActive).IsUnique();
                 entity.Property(e => e.CreatedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.Property(e => e.ModifiedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
+            
+
+            modelBuilder.Entity<Entities.AboutMe>().ToTable("AboutMe");
+            modelBuilder.Entity<Entities.AboutMe>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+                entity.HasIndex(e => e.Name).IsUnique();
+                entity.HasIndex(e => e.Email).IsUnique();
+                entity.HasIndex(e => e.address1);
+                entity.HasIndex(e => e.address2);
+                entity.HasIndex(e => e.City);
+                entity.HasIndex(e => e.State);
+                entity.HasIndex(e => e.Country);
+                entity.HasIndex(e => e.zip);
+                entity.HasIndex(e => e.ContactNumber).IsUnique();
+                entity.HasIndex(e => e.SkypeId).IsUnique();
+                entity.HasIndex(e => e.Linkedin).IsUnique();
+                entity.HasIndex(e => e.Twitter).IsUnique();
+                entity.HasIndex(e => e.Others).IsUnique();
+
+                entity.HasIndex(e => e.Github).IsUnique();
+
+                entity.HasIndex(e => e.Title);
+                entity.HasIndex(e => e.ShortTitle);
+                entity.HasIndex(e => e.Summary);
+
+                entity.HasIndex(e => e.HappyClientsCount);
+                entity.HasIndex(e => e.HappyClientsShortSummary);
+                entity.HasIndex(e => e.ProjectsCount);
+                entity.HasIndex(e => e.ProjectsShortSummary);
+                entity.HasIndex(e => e.Yearsofexperience);
+                entity.HasIndex(e => e.YearsofexperienceShortSummary);
+                entity.HasIndex(e => e.Awards);
+                entity.HasIndex(e => e.AwardsShortSummary);
+
+                entity.HasIndex(e => e.IsActive).IsUnique();
+                entity.Property(e => e.CreatedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(e => e.ModifiedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            });
+
+            modelBuilder.Entity<Entities.AboutMe>()
+               .HasOne(x => x.myPortal)
+               .WithOne(p => p.AboutMe)
+               .HasForeignKey<AboutMe>(p => p.MyPortalID);
+
+            modelBuilder.Entity<Entities.MyPortal>()
+              .HasOne(x => x.AboutMe)
+              .WithOne(p => p.myPortal);
+             
+
             modelBuilder.Entity<PortfolioSummary>().ToTable("PortfolioSummary");
             modelBuilder.Entity<PortfolioSummary>(entity =>
             {
@@ -69,15 +128,15 @@ namespace MyPortfolio.API
                 entity.Property(e => e.CreatedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
                 entity.Property(e => e.ModifiedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
-            modelBuilder.Entity<PortfolioSummary>()
-              .HasOne(x => x.Portfolio)
-              .WithMany(d => d.PortfolioSummaries)
-              .HasForeignKey(x => x.PortfolioID)
-              .IsRequired();
-            modelBuilder.Entity<Portfolio>()
-                .HasMany(x => x.PortfolioSummaries)
-                .WithOne(p => p.Portfolio)
-                .IsRequired();
+            //modelBuilder.Entity<PortfolioSummary>()
+            //  .HasOne(x => x.Portfolio)
+            //  .WithMany(d => d.PortfolioSummaries)
+            //  .HasForeignKey(x => x.PortfolioID)
+            //  .IsRequired();
+            //modelBuilder.Entity<Entities.MyPortal>()
+            //    .HasMany(x => x.PortfolioSummaries)
+            //    .WithOne(p => p.Portfolio)
+            //    .IsRequired();
 
             modelBuilder.Entity<PortfolioUser>().ToTable("PortfolioUser");
             modelBuilder.Entity<PortfolioUser>(entity =>
@@ -96,14 +155,14 @@ namespace MyPortfolio.API
                 entity.Property(e => e.ModifiedDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
             });
 
-            modelBuilder.Entity<PortfolioUser>()
-                  .HasOne(x => x.Portfolio)
-                  .WithMany(x => x.PortfolioUsers)
-                  .HasForeignKey(x => x.PortfolioID);
-            modelBuilder.Entity<Portfolio>()
-                .HasMany(x => x.PortfolioUsers)
-                .WithOne(x => x.Portfolio)
-                .IsRequired();
+            //modelBuilder.Entity<PortfolioUser>()
+            //      .HasOne(x => x.Portfolio)
+            //      .WithMany(x => x.PortfolioUsers)
+            //      .HasForeignKey(x => x.PortfolioID);
+            //modelBuilder.Entity<Entities.MyPortal>()
+            //    .HasMany(x => x.PortfolioUsers)
+            //    .WithOne(x => x.Portfolio)
+            //    .IsRequired();
 
             base.OnModelCreating(modelBuilder);
         }

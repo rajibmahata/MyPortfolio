@@ -8,14 +8,14 @@ namespace MyPortfolio.API.GraphQL
         #region Property  
         private readonly IPortfolioService<PortfolioType> _portfolioTypeService;
         private readonly IPortfolioService<Skill> _skillService;
-        private readonly IPortfolioService<Portfolio> _portfolioService;
+        private readonly IPortfolioService<Entities.MyPortal> _portfolioService;
         private readonly IPortfolioService<PortfolioSummary> _portfolioSummaryService;
         private readonly IPortfolioService<PortfolioUser> _portfolioUserService;
         #endregion
 
         #region Constructor  
         public Mutuation(IPortfolioService<PortfolioType> portfolioTypeService, IPortfolioService<Skill> skillService,
-            IPortfolioService<Portfolio> portfolioService, IPortfolioService<PortfolioSummary> portfolioSummaryService,
+            IPortfolioService<Entities.MyPortal> portfolioService, IPortfolioService<PortfolioSummary> portfolioSummaryService,
             IPortfolioService<PortfolioUser> portfolioUserService)
         {
             _portfolioTypeService = portfolioTypeService;
@@ -33,8 +33,8 @@ namespace MyPortfolio.API.GraphQL
         public async Task<Skill> UpdateSkill(Skill skill) => await _skillService.Update(skill);
         public async Task<bool> DeleteSkill(long id) => await _skillService.Delete(id);
 
-        public async Task<Portfolio> CreatePortfolio(Portfolio portfolio) => await _portfolioService.Insert(portfolio);
-        public async Task<Portfolio> UpdatePortfolio(Portfolio portfolio) => await _portfolioService.Update(portfolio);
+        public async Task<Entities.MyPortal> CreatePortfolio(Entities.MyPortal portfolio) => await _portfolioService.Insert(portfolio);
+        public async Task<Entities.MyPortal> UpdatePortfolio(Entities.MyPortal portfolio) => await _portfolioService.Update(portfolio);
         public async Task<bool> DeletePortfolio(long id) => await _portfolioService.Delete(id);
 
         public async Task<PortfolioSummary> CreatePortfolioSummary(PortfolioSummary portfolioSummary) => await _portfolioSummaryService.Insert(portfolioSummary);

@@ -4,7 +4,7 @@ namespace MyPortfolio.API.Entities
 {
     public class PortfolioUser : BaseEntity
     {
-        [ForeignKey("Portfolio")]
+       // [ForeignKey("Portfolio")]
         public long PortfolioID { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
@@ -13,6 +13,6 @@ namespace MyPortfolio.API.Entities
         public string Linkedin { get; set; }
         public string Twitter { get; set; }
         public string Others { get; set; }
-        public Portfolio Portfolio { get; set; }
+        public MyPortal Portfolio { get; set; }
     }
 }

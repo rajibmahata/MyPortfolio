@@ -1,18 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyPortfolio.API.Entities
 {
     public class BaseEntity
     {
         [Key]
-        public long ID { get; set; }
+        public string ID { get; set; }
+
         [Required]
         public DateTime CreatedDate { get; set; }
+
         [Required]
         public DateTime ModifiedDate { get; set; }
 
         [Required]
-        public DateTime IsActive { get; set; }
+        public bool IsActive { get; set; }
 
     }
 }

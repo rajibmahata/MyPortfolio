@@ -7,11 +7,12 @@ namespace MyPortfolio.API.Services
     {
         private MyPortfolioDbContext _context = null;
         private DbSet<T> table = null;
-        public PortfolioService()
-        {
-            this._context = new MyPortfolioDbContext();
-            table = _context.Set<T>();
-        }
+        //public PortfolioService()
+        //{
+        //    this._context = new MyPortfolioDbContext();
+        //    table = _context.Set<T>();
+        //}
+
         public PortfolioService(MyPortfolioDbContext _context)
         {
             this._context = _context;

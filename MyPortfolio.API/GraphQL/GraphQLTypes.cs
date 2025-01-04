@@ -5,7 +5,7 @@ namespace MyPortfolio.API.GraphQL
     public class GraphQLPortfolioType : ObjectType<PortfolioType>
     {
     }
-    public class GraphQLPortfolio : ObjectType<Portfolio>
+    public class GraphQLPortfolio : ObjectType<Entities.MyPortal>
     {
     }
     public class GraphQLPortfolioSummary : ObjectType<PortfolioSummary>
